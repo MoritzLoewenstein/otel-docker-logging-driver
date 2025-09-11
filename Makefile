@@ -27,7 +27,7 @@ plugin-disable:
 plugin-remove: plugin-disable
 	@docker plugin rm -f $(PLUGIN_NAME):$(PLUGIN_TAG)
 
-plugin-redeploy:
+plugin-up:
 	@$(MAKE) plugin-build
 	-@docker plugin disable -f $(PLUGIN_NAME):$(PLUGIN_TAG) >/dev/null 2>&1 || true
 	-@docker plugin rm -f $(PLUGIN_NAME):$(PLUGIN_TAG) >/dev/null 2>&1 || true
