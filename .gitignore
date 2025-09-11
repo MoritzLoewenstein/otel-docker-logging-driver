@@ -1,0 +1,24 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go build artifacts
+bin/
+build/
+dist/
+
+# Editor/OS
+.DS_Store
+.idea/
+.vscode/
+
+# Docker plugin packaging artifacts
+plugin/package/
+plugin/rootfs/
+
+# Integration test data
+test/integration/data/

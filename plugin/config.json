@@ -1,0 +1,31 @@
+{
+  "description": "OpenTelemetry docker logging driver",
+  "documentation": "https://github.com/moritzloewenstein/otel-docker-logging-driver",
+  "interface": {
+    "types": ["docker.logdriver/1.0"],
+    "socket": "otel-logs.sock"
+  },
+  "entrypoint": ["/usr/bin/otel-docker-logging-driver"],
+  "env": [
+    {
+      "name": "OTEL_EXPORTER_OTLP_LOGS_ENDPOINT",
+      "value": "http://collector:4317",
+      "settable": ["value"]
+    },
+    {
+      "name": "OTEL_EXPORTER_OTLP_LOGS_INSECURE",
+      "value": "true",
+      "settable": ["value"]
+    },
+    {
+      "name": "OTEL_EXPORTER_OTLP_LOGS_HEADERS",
+      "value": "",
+      "settable": ["value"]
+    },
+    {
+      "name": "OTEL_EXPORTER_OTLP_LOGS_COMPRESSION",
+      "value": "",
+      "settable": ["value"]
+    }
+  ]
+}

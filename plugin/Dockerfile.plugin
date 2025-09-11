@@ -1,0 +1,8 @@
+FROM golang:1.25 AS build
+WORKDIR /src
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /out/otel-docker-logging-driver ./cmd/otel-docker-logging-driver
+
+FROM scratch AS rootfs
+COPY --from=build /out/otel-docker-logging-driver /usr/bin/otel-docker-logging-driver
+ENTRYPOINT ["/usr/bin/otel-docker-logging-driver"]
