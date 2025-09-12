@@ -1,0 +1,33 @@
+name: Publish Docker Logging Plugin
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: {}
+
+concurrency:
+  group: publish-plugin-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      PLUGIN_REPO: moritzloewenstein/otel-docker-logging-driver
+      PLUGIN_TAG: latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          username: moritzloewenstein
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: build & create docker plugin
+        run: |
+          set -e
+          make plugin-build PLUGIN_TAG=${{ env.PLUGIN_TAG }}
+          make plugin-create PLUGIN_TAG=${{ env.PLUGIN_TAG }}
+
+      - name: Push plugin
+        run: docker plugin push ${{ env.PLUGIN_REPO }}:${{ env.PLUGIN_TAG }}

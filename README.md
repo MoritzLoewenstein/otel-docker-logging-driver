@@ -51,6 +51,10 @@ docker plugin set \
   - `OTEL_EXPORTER_OTLP_LOGS_INSECURE` – set `true` to disable TLS when using `http`.
   - `OTEL_EXPORTER_OTLP_LOGS_HEADERS` – comma-separated headers, `k=v,k2=v2`.
   - `OTEL_EXPORTER_OTLP_LOGS_COMPRESSION` – compression setting (e.g., `gzip`).
+  - TLS (file-based certificates):
+    - `OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE` – path to CA certificate PEM file enabling TLS. If unset, the generic `OTEL_EXPORTER_OTLP_CERTIFICATE` is used as a fallback. TLS creds are applied only when a CA certificate is provided (see the implementation in [internal/otelx/otel.go](file:///home/moritzl/Dokumente/github/public/otel-docker-logging-driver/internal/otelx/otel.go#L56-L64)).
+    - `OTEL_EXPORTER_OTLP_LOGS_CLIENT_CERTIFICATE` – optional path to client certificate PEM for mTLS.
+    - `OTEL_EXPORTER_OTLP_LOGS_CLIENT_KEY` – optional path to client private key PEM for mTLS.
 
 - Per-container options (set via `--log-opt` or compose `logging.options`), implemented in [internal/driver/driver.go](internal/driver/driver.go):
   - `include-labels` – `true|1|yes` to include container labels as `docker.label.<key>` attributes.

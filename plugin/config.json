@@ -26,6 +26,21 @@
       "name": "OTEL_EXPORTER_OTLP_LOGS_COMPRESSION",
       "value": "",
       "settable": ["value"]
+    },
+    {
+      "name": "OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE",
+      "value": "",
+      "settable": ["value"]
+    },
+    {
+      "name": "OTEL_EXPORTER_OTLP_LOGS_CLIENT_CERTIFICATE",
+      "value": "",
+      "settable": ["value"]
+    },
+    {
+      "name": "OTEL_EXPORTER_OTLP_LOGS_CLIENT_KEY",
+      "value": "",
+      "settable": ["value"]
     }
   ]
 }
