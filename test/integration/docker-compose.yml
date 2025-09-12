@@ -7,11 +7,11 @@ services:
       - ./data:/data
     ports:
       - "4317:4317"
+      - "4318:4318"
 
   demo:
     image: busybox
     command: sh -c 'i=0; while true; do echo "hello $$i"; i=$$((i+1)); sleep 1; done'
-    # Requires the plugin to be created+enabled on the host daemon first
     logging:
       driver: "moritzloewenstein/otel-docker-logging-driver:dev"
       options:
