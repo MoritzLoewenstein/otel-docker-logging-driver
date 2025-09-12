@@ -26,7 +26,7 @@ docker plugin enable moritzloewenstein/otel-docker-logging-driver
 
 Plugin-level options (set via `docker plugin set`), defined in [plugin/config.json](plugin/config.json):
 
-- `OTEL_EXPORTER_OTLP_LOGS_ENDPOINT` – OTLP logs endpoint (e.g., `http://collector:4317` or `http://collector:4318`).
+- `OTEL_EXPORTER_OTLP_LOGS_ENDPOINT` – OTLP logs endpoint (e.g., `http://localhost:4317` or `http://localhost:4318`).
 - `OTEL_EXPORTER_OTLP_LOGS_PROTOCOL` – `grpc` or `http/protobuf`. Default is `grpc` for backward compatibility.
 - `OTEL_EXPORTER_OTLP_LOGS_INSECURE` – set `true` to disable TLS when using `http`.
 - `OTEL_EXPORTER_OTLP_LOGS_HEADERS` – comma-separated headers, `k=v,k2=v2`.
