@@ -53,11 +53,21 @@ func SetupProvider(ctx context.Context, cfg config.Config) (*Exporter, *Provider
 		opts = append(opts, otlploggrpc.WithCompressor("gzip"))
 	}
 
-	// Optional TLS via files (env-based): OTEL_EXPORTER_OTLP_CERTIFICATE, CLIENT_CERTIFICATE, CLIENT_KEY
-	if ca := os.Getenv("OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE"); ca == "" {
+	// Optional TLS via files (env-based): prefer LOGS_* vars, fall back to generic OTLP_* vars
+	ca := os.Getenv("OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE")
+	if ca == "" {
 		ca = os.Getenv("OTEL_EXPORTER_OTLP_CERTIFICATE")
-	} else if ca != "" {
-		creds, err := loadTLSCreds(ca, os.Getenv("OTEL_EXPORTER_OTLP_LOGS_CLIENT_CERTIFICATE"), os.Getenv("OTEL_EXPORTER_OTLP_LOGS_CLIENT_KEY"))
+	}
+	if ca != "" {
+		clientCert := os.Getenv("OTEL_EXPORTER_OTLP_LOGS_CLIENT_CERTIFICATE")
+		if clientCert == "" {
+			clientCert = os.Getenv("OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE")
+		}
+		clientKey := os.Getenv("OTEL_EXPORTER_OTLP_LOGS_CLIENT_KEY")
+		if clientKey == "" {
+			clientKey = os.Getenv("OTEL_EXPORTER_OTLP_CLIENT_KEY")
+		}
+		creds, err := loadTLSCreds(ca, clientCert, clientKey)
 		if err == nil {
 			opts = append(opts, otlploggrpc.WithTLSCredentials(creds))
 		}
