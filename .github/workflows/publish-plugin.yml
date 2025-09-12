@@ -32,7 +32,6 @@ jobs:
       - name: Push plugin
         run: docker plugin push ${{ env.PLUGIN_REPO }}:${{ env.PLUGIN_TAG }}
 
-
       - uses: peter-evans/dockerhub-description@v4
         with:
           username: moritzloewenstein
