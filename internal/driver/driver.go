@@ -16,7 +16,7 @@ import (
 	"github.com/docker/docker/daemon/logger"
 	"github.com/docker/go-plugins-helpers/sdk"
 	protoio "github.com/gogo/protobuf/io"
-	"github.com/tonistiigi/fifo"
+	"github.com/containerd/fifo"
 
 	olog "go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/log/global"
