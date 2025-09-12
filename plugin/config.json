@@ -10,7 +10,7 @@
   "env": [
     {
       "name": "OTEL_EXPORTER_OTLP_LOGS_ENDPOINT",
-      "value": "http://collector:4317",
+      "value": "http://localhost:4317",
       "settable": ["value"]
     },
     {
