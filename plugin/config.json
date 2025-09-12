@@ -6,6 +6,7 @@
     "socket": "otel-logs.sock"
   },
   "entrypoint": ["/usr/bin/otel-docker-logging-driver"],
+  "network": {"type": "host"},
   "env": [
     {
       "name": "OTEL_EXPORTER_OTLP_LOGS_ENDPOINT",

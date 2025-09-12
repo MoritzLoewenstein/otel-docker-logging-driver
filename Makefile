@@ -1,4 +1,4 @@
-.PHONY: plugin-build plugin-create plugin-enable plugin-disable plugin-remove plugin-up plugin-redeploy
+.PHONY: plugin-build plugin-create plugin-enable plugin-disable plugin-remove plugin-up plugin-logs plugin-test
 
 PLUGIN_NAME?=moritzloewenstein/otel-docker-logging-driver
 PLUGIN_TAG?=dev
@@ -33,3 +33,16 @@ plugin-up:
 	-@docker plugin rm -f $(PLUGIN_NAME):$(PLUGIN_TAG) >/dev/null 2>&1 || true
 	@docker plugin create $(PLUGIN_NAME):$(PLUGIN_TAG) $(PKG_DIR)
 	@docker plugin enable $(PLUGIN_NAME):$(PLUGIN_TAG)
+
+plugin-logs:
+	@ID=$$(docker plugin inspect -f '{{.ID}}' $(PLUGIN_NAME):$(PLUGIN_TAG)); \
+	if [ -z "$$ID" ]; then echo "Plugin $(PLUGIN_NAME):$(PLUGIN_TAG) not found"; exit 1; fi; \
+	echo "Following Docker daemon logs for plugin $$ID (Manjaro/systemd). Ctrl-C to stop..."; \
+	sudo journalctl -u docker.service -f -o cat | egrep "$$ID|otel-docker-logging-driver|otelx:|consume:|emit:"
+
+plugin-test:
+	@$(MAKE) plugin-up
+	-@docker plugin disable -f $(PLUGIN_NAME):$(PLUGIN_TAG) >/dev/null 2>&1 || true
+	@docker plugin set $(PLUGIN_NAME):$(PLUGIN_TAG) OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4317 OTEL_EXPORTER_OTLP_LOGS_INSECURE=true
+	@docker plugin enable $(PLUGIN_NAME):$(PLUGIN_TAG)
+	cd test/integration && docker compose up
