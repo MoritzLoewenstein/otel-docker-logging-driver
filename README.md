@@ -2,52 +2,26 @@
 
 A Docker Logging Driver plugin that forwards container logs to an OpenTelemetry (OTLP) Logs endpoint.
 
-## Build & Run (dev)
+## Install and send to gRPC logs endpoint
 
 ```bash
-make plugin-up
-```
-
-- Configure endpoint via environment variables (OTEL standard):
-
-  - `OTEL_EXPORTER_OTLP_LOGS_ENDPOINT` (e.g., `http://localhost:4317` for gRPC or `http://localhost:4318` for HTTP)
-  - `OTEL_EXPORTER_OTLP_LOGS_PROTOCOL` (`grpc` or `http/protobuf`; default is `grpc`)
-  - `OTEL_EXPORTER_OTLP_LOGS_INSECURE=true` (if needed)
-  - `OTEL_EXPORTER_OTLP_LOGS_HEADERS=key=value`
-
-- The plugin server exposes a Unix socket named `otel-logs` when started by Docker Plugin runtime.
-
-## Install the plugin (prod)
-
-```bash
-docker plugin install moritzloewenstein/otel-docker-logging-driver
-```
-
-## Install the plugin (local dev)
-
-- Build, replace, and enable the plugin in one step:
-
-```bash
-make plugin-up
-```
-
-- Verify and configure endpoint to a local collector:
-
-```bash
-docker plugin inspect moritzloewenstein/otel-docker-logging-driver:dev
-
-# gRPC example
-docker plugin set \
-  moritzloewenstein/otel-docker-logging-driver:dev \
+docker plugin install --disable moritzloewenstein/otel-docker-logging-driver
+docker plugin set moritzloewenstein/otel-docker-logging-driver \
   OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4317 \
   OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=grpc \
   OTEL_EXPORTER_OTLP_LOGS_INSECURE=true
+docker plugin enable moritzloewenstein/otel-docker-logging-driver
+```
 
-# HTTP example
-docker plugin set \
-  moritzloewenstein/otel-docker-logging-driver:dev \
+## Install and send to http logs endpoint
+
+```bash
+docker plugin install --disable moritzloewenstein/otel-docker-logging-driver
+docker plugin set moritzloewenstein/otel-docker-logging-driver \
   OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4318 \
-  OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http/protobuf
+  OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http \
+  OTEL_EXPORTER_OTLP_LOGS_INSECURE=true
+docker plugin enable moritzloewenstein/otel-docker-logging-driver
 ```
 
 ## Configuration
@@ -67,10 +41,11 @@ docker plugin set \
 - Per-container options (set via `--log-opt` or compose `logging.options`), implemented in [internal/driver/driver.go](internal/driver/driver.go#L172-L187):
   - `include-labels` – `true|1|yes` to include container labels as `docker.label.<key>` attributes.
   - Note: endpoint/headers overrides per container are not yet supported; the driver logs a warning if provided.
+- The plugin server exposes a Unix socket named `otel-logs` when started by Docker Plugin runtime.
 
 ## Integration test
 
-- Collector config: [test/integration/collector-config.yaml](test/integration/collector-config.yaml).
+Collector config: [test/integration/collector-config.yaml](test/integration/collector-config.yaml).
 
 ```bash
 # grpc
@@ -80,7 +55,6 @@ make plugin-test-http
 ```
 
 Logs should appear in `test/integration/data/otel-logs.json`.
-
 Cleanup after testing:
 
 ```bash
