@@ -12,11 +12,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/containerd/fifo"
 	"github.com/docker/docker/api/types/plugins/logdriver"
 	"github.com/docker/docker/daemon/logger"
 	"github.com/docker/go-plugins-helpers/sdk"
 	protoio "github.com/gogo/protobuf/io"
-	"github.com/containerd/fifo"
 
 	olog "go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/log/global"

@@ -1,4 +1,4 @@
-.PHONY: plugin-build plugin-create plugin-enable plugin-disable plugin-remove plugin-up plugin-logs plugin-test-grpc plugin-test-http
+.PHONY: plugin-build plugin-create plugin-enable plugin-disable plugin-remove plugin-up plugin-logs plugin-test-grpc plugin-test-http lint lint-fix
 
 PLUGIN_NAME?=moritzloewenstein/otel-docker-logging-driver
 PLUGIN_TAG?=dev
@@ -48,9 +48,23 @@ plugin-test-grpc:
 	@docker plugin enable $(PLUGIN_NAME):$(PLUGIN_TAG)
 	cd test/integration && docker compose up
 
-plugin-test-http:
+	plugin-test-http:
 	@$(MAKE) plugin-up
 	-@docker plugin disable -f $(PLUGIN_NAME):$(PLUGIN_TAG) >/dev/null 2>&1 || true
 	@docker plugin set $(PLUGIN_NAME):$(PLUGIN_TAG) OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4318 OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http/protobuf
 	@docker plugin enable $(PLUGIN_NAME):$(PLUGIN_TAG)
 	cd test/integration && docker compose up
+
+lint:
+	@command -v golangci-lint >/dev/null 2>&1 || { \
+		echo "golangci-lint not installed. See https://golangci-lint.run/usage/install/"; \
+		exit 1; \
+	}
+	golangci-lint run
+
+lint-fix:
+	@command -v golangci-lint >/dev/null 2>&1 || { \
+		echo "golangci-lint not installed. See https://golangci-lint.run/usage/install/"; \
+		exit 1; \
+	}
+	golangci-lint run --fix

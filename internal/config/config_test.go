@@ -7,14 +7,14 @@ import (
 
 func TestNormalizeProtocol(t *testing.T) {
 	cases := map[string]string{
-		"":                "",
-		"grpc":            "grpc",
-		"GRPC":            "grpc",
-		"http":            "http",
-		"HTTP/PROTOBUF":   "http",
-		"http-protobuf":   "http",
-		"http_proto":      "http",
-		"something-else":  "",
+		"":               "",
+		"grpc":           "grpc",
+		"GRPC":           "grpc",
+		"http":           "http",
+		"HTTP/PROTOBUF":  "http",
+		"http-protobuf":  "http",
+		"http_proto":     "http",
+		"something-else": "",
 	}
 	for in, want := range cases {
 		if got := normalizeProtocol(in); got != want {
@@ -25,7 +25,9 @@ func TestNormalizeProtocol(t *testing.T) {
 
 func TestParseHeaders(t *testing.T) {
 	m := parseHeaders("")
-	if len(m) != 0 { t.Fatalf("expected empty map, got %v", m) }
+	if len(m) != 0 {
+		t.Fatalf("expected empty map, got %v", m)
+	}
 
 	m = parseHeaders("a=b, c=d ,e=f=g")
 	if m["a"] != "b" || m["c"] != "d" || m["e"] != "f=g" {
@@ -56,7 +58,11 @@ func TestFromEnv(t *testing.T) {
 		restores = append(restores, r)
 		_ = os.Unsetenv(k)
 	}
-	defer func() { for _, r := range restores { r() } }()
+	defer func() {
+		for _, r := range restores {
+			r()
+		}
+	}()
 
 	// Defaults
 	cfg := FromEnv()
@@ -71,11 +77,21 @@ func TestFromEnv(t *testing.T) {
 	os.Setenv("OTEL_EXPORTER_OTLP_LOGS_HEADERS", "k=v,x=y")
 	os.Setenv("OTEL_EXPORTER_OTLP_LOGS_COMPRESSION", "gzip")
 	cfg = FromEnv()
-	if cfg.Endpoint != "https://collector:4318" { t.Fatalf("endpoint=%q", cfg.Endpoint) }
-	if cfg.Protocol != "http" { t.Fatalf("protocol=%q", cfg.Protocol) }
-	if !cfg.Insecure { t.Fatalf("insecure expected true") }
-	if len(cfg.Headers) != 2 || cfg.Headers["k"] != "v" || cfg.Headers["x"] != "y" { t.Fatalf("headers=%v", cfg.Headers) }
-	if cfg.Compression != "gzip" { t.Fatalf("compression=%q", cfg.Compression) }
+	if cfg.Endpoint != "https://collector:4318" {
+		t.Fatalf("endpoint=%q", cfg.Endpoint)
+	}
+	if cfg.Protocol != "http" {
+		t.Fatalf("protocol=%q", cfg.Protocol)
+	}
+	if !cfg.Insecure {
+		t.Fatalf("insecure expected true")
+	}
+	if len(cfg.Headers) != 2 || cfg.Headers["k"] != "v" || cfg.Headers["x"] != "y" {
+		t.Fatalf("headers=%v", cfg.Headers)
+	}
+	if cfg.Compression != "gzip" {
+		t.Fatalf("compression=%q", cfg.Compression)
+	}
 
 	// Fallback to generic vars
 	os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_ENDPOINT")
@@ -87,8 +103,16 @@ func TestFromEnv(t *testing.T) {
 	os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_HEADERS")
 	os.Setenv("OTEL_EXPORTER_OTLP_HEADERS", "a=b")
 	cfg = FromEnv()
-	if cfg.Endpoint != "collector:4317" { t.Fatalf("endpoint=%q", cfg.Endpoint) }
-	if cfg.Protocol != "grpc" { t.Fatalf("protocol=%q", cfg.Protocol) }
-	if !cfg.Insecure { t.Fatalf("insecure expected true") }
-	if cfg.Headers["a"] != "b" { t.Fatalf("headers=%v", cfg.Headers) }
+	if cfg.Endpoint != "collector:4317" {
+		t.Fatalf("endpoint=%q", cfg.Endpoint)
+	}
+	if cfg.Protocol != "grpc" {
+		t.Fatalf("protocol=%q", cfg.Protocol)
+	}
+	if !cfg.Insecure {
+		t.Fatalf("insecure expected true")
+	}
+	if cfg.Headers["a"] != "b" {
+		t.Fatalf("headers=%v", cfg.Headers)
+	}
 }
