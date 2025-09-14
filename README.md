@@ -43,21 +43,3 @@ Per-container options (set via `--log-opt` or compose `logging.options`), implem
 - Note: endpoint/headers overrides per container are not yet supported; the driver logs a warning if provided.
 
 The plugin server exposes a Unix socket named `otel-logs` when started by Docker Plugin runtime.
-
-## Integration test
-
-Collector config: [test/integration/collector-config.yaml](test/integration/collector-config.yaml).
-
-```bash
-# grpc
-make plugin-test-grpc
-# http
-make plugin-test-http
-```
-
-Logs should appear in `test/integration/data/otel-logs.json`.
-Cleanup after testing:
-
-```bash
-make plugin-remove
-```
