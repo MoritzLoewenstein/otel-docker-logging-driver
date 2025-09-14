@@ -71,11 +71,11 @@ func TestFromEnv(t *testing.T) {
 	}
 
 	// Explicit LOGS_* override
-	os.Setenv("OTEL_EXPORTER_OTLP_LOGS_ENDPOINT", "https://collector:4318")
-	os.Setenv("OTEL_EXPORTER_OTLP_LOGS_PROTOCOL", "http/protobuf")
-	os.Setenv("OTEL_EXPORTER_OTLP_LOGS_INSECURE", "true")
-	os.Setenv("OTEL_EXPORTER_OTLP_LOGS_HEADERS", "k=v,x=y")
-	os.Setenv("OTEL_EXPORTER_OTLP_LOGS_COMPRESSION", "gzip")
+	_ = os.Setenv("OTEL_EXPORTER_OTLP_LOGS_ENDPOINT", "https://collector:4318")
+	_ = os.Setenv("OTEL_EXPORTER_OTLP_LOGS_PROTOCOL", "http/protobuf")
+	_ = os.Setenv("OTEL_EXPORTER_OTLP_LOGS_INSECURE", "true")
+	_ = os.Setenv("OTEL_EXPORTER_OTLP_LOGS_HEADERS", "k=v,x=y")
+	_ = os.Setenv("OTEL_EXPORTER_OTLP_LOGS_COMPRESSION", "gzip")
 	cfg = FromEnv()
 	if cfg.Endpoint != "https://collector:4318" {
 		t.Fatalf("endpoint=%q", cfg.Endpoint)
@@ -94,14 +94,14 @@ func TestFromEnv(t *testing.T) {
 	}
 
 	// Fallback to generic vars
-	os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_ENDPOINT")
-	os.Setenv("OTEL_EXPORTER_OTLP_ENDPOINT", "collector:4317")
-	os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_PROTOCOL")
-	os.Setenv("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc")
-	os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_INSECURE")
-	os.Setenv("OTEL_EXPORTER_OTLP_INSECURE", "TRUE")
-	os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_HEADERS")
-	os.Setenv("OTEL_EXPORTER_OTLP_HEADERS", "a=b")
+	_ = os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_ENDPOINT")
+	_ = os.Setenv("OTEL_EXPORTER_OTLP_ENDPOINT", "collector:4317")
+	_ = os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_PROTOCOL")
+	_ = os.Setenv("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc")
+	_ = os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_INSECURE")
+	_ = os.Setenv("OTEL_EXPORTER_OTLP_INSECURE", "TRUE")
+	_ = os.Unsetenv("OTEL_EXPORTER_OTLP_LOGS_HEADERS")
+	_ = os.Setenv("OTEL_EXPORTER_OTLP_HEADERS", "a=b")
 	cfg = FromEnv()
 	if cfg.Endpoint != "collector:4317" {
 		t.Fatalf("endpoint=%q", cfg.Endpoint)

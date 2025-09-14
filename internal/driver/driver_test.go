@@ -43,7 +43,7 @@ func TestConsume_MappingAndLabels(t *testing.T) {
 
 	// Prepare a pipe with two docker log entries: stdout and stderr.
 	pr, pw := io.Pipe()
-	defer pr.Close()
+	defer func() { _ = pr.Close() }()
 
 	info := logger.Info{
 		ContainerID:        "cid123",

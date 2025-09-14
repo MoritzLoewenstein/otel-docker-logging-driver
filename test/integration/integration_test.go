@@ -68,7 +68,7 @@ func runEndToEnd(t *testing.T, proto string) {
 	if err != nil {
 		t.Fatalf("open data: %v", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	foundBody := false
 	foundLabel := false
 	s := bufio.NewScanner(f)

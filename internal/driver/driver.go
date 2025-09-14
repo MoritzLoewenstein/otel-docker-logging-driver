@@ -67,7 +67,7 @@ func RegisterHandlers(h *sdk.Handler, d *Driver) {
 	h.HandleFunc("/LogDriver.StartLogging", func(w http.ResponseWriter, r *http.Request) {
 		var req StartLoggingRequest
 		_ = json.NewDecoder(r.Body).Decode(&req)
-		fmt.Fprintf(os.Stdout, "StartLogging: container=%s file=%s\n", req.Info.ContainerID, req.File)
+		_, _ = fmt.Fprintf(os.Stdout, "StartLogging: container=%s file=%s\n", req.Info.ContainerID, req.File)
 		err := d.StartLogging(req.File, req.Info)
 		writeResp(w, err)
 	})
@@ -75,7 +75,7 @@ func RegisterHandlers(h *sdk.Handler, d *Driver) {
 	h.HandleFunc("/LogDriver.StopLogging", func(w http.ResponseWriter, r *http.Request) {
 		var req StopLoggingRequest
 		_ = json.NewDecoder(r.Body).Decode(&req)
-		fmt.Fprintf(os.Stdout, "StopLogging: file=%s\n", req.File)
+		_, _ = fmt.Fprintf(os.Stdout, "StopLogging: file=%s\n", req.File)
 		err := d.StopLogging(req.File)
 		writeResp(w, err)
 	})
@@ -135,7 +135,7 @@ func (d *Driver) StopLogging(file string) error {
 
 func (d *Driver) consume(ctx context.Context, r io.ReadCloser, info logger.Info) {
 	dec := protoio.NewUint32DelimitedReader(r, binary.BigEndian, 1e6)
-	defer dec.Close()
+	defer func() { _ = dec.Close() }()
 	var entry logdriver.LogEntry
 
 	otelLogger := global.Logger("otel-docker-logging-driver")
