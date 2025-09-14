@@ -1,9 +1,11 @@
 A Docker Logging Driver plugin that forwards container logs to an OpenTelemetry (OTLP) Logs endpoint.
 
-## Install and send to gRPC logs endpoint
+## Install and configure gRPC logs endpoint
+
+The `host` permission is required to use host level networking.
 
 ```bash
-docker plugin install --disable moritzloewenstein/otel-docker-logging-driver
+docker plugin install --disable --grant-all-permissions moritzloewenstein/otel-docker-logging-driver
 docker plugin set moritzloewenstein/otel-docker-logging-driver \
   OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4317 \
   OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=grpc \
@@ -11,15 +13,45 @@ docker plugin set moritzloewenstein/otel-docker-logging-driver \
 docker plugin enable moritzloewenstein/otel-docker-logging-driver
 ```
 
-## Install and send to http logs endpoint
+## Install and configure http logs endpoint
+
+The `host` permission is required to use host level networking.
 
 ```bash
-docker plugin install --disable moritzloewenstein/otel-docker-logging-driver
+docker plugin install --disable --grant-all-permissions moritzloewenstein/otel-docker-logging-driver
 docker plugin set moritzloewenstein/otel-docker-logging-driver \
   OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://localhost:4318 \
   OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http \
   OTEL_EXPORTER_OTLP_LOGS_INSECURE=true
 docker plugin enable moritzloewenstein/otel-docker-logging-driver
+```
+
+## Use globally
+
+In `/etc/docker/daemon.json`:
+
+```json
+{
+  "log-driver": "moritzloewenstein/otel-docker-logging-driver:latest",
+  "log-opts": {
+    "include-labels": "true"
+  }
+}
+```
+
+## Use per docker compose
+
+```yml
+logging:
+  driver: moritzloewenstein/otel-docker-logging-driver:latest
+  options:
+    include-labels: "true"
+```
+
+## Per docker container
+
+```bash
+docker run --log-driver=moritzloewenstein/otel-docker-logging-driver:latest --log-opt include-labels=true nginx
 ```
 
 ## Configuration

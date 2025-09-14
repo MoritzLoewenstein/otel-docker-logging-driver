@@ -1,4 +1,4 @@
-.PHONY: plugin-build plugin-create plugin-enable plugin-disable plugin-remove plugin-up plugin-logs test test-unit test-e2e lint lint-fix
+.PHONY: plugin-build plugin-create plugin-enable plugin-disable plugin-remove plugin-up test test-unit test-e2e lint lint-fix
 
 PLUGIN_NAME?=moritzloewenstein/otel-docker-logging-driver
 PLUGIN_TAG?=dev
