@@ -1,8 +1,10 @@
 name: Publish Docker Logging Plugin
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: ["CI"]
+    branches: ["main"]
+    types: ["completed"]
   workflow_dispatch: {}
 
 concurrency:
@@ -11,12 +13,19 @@ concurrency:
 
 jobs:
   publish:
+    # Gate publish on CI success (or allow manual dispatch)
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     env:
       PLUGIN_REPO: moritzloewenstein/otel-docker-logging-driver
       PLUGIN_TAG: latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        with:
+          # When triggered by workflow_run, check out the exact commit CI ran on
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - uses: docker/login-action@v3
         with:
