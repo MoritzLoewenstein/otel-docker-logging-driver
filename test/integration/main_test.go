@@ -19,7 +19,7 @@ func TestMain(m *testing.M) {
 	wd, _ := os.Getwd()
 	stackDir := filepath.Clean(filepath.Join(wd))
 	repoRoot := filepath.Dir(filepath.Dir(stackDir))
-	if err := runCmd(ctx, repoRoot, true, "make", "plugin-up"); err != nil {
+	if err := runCmd(ctx, repoRoot, true, "just", "plugin-up"); err != nil {
 		os.Exit(1)
 	}
 

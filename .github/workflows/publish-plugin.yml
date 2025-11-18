@@ -32,11 +32,13 @@ jobs:
           username: moritzloewenstein
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - uses: extractions/setup-just@v3
+
       - name: build & create docker plugin
         run: |
           set -e
-          make plugin-build PLUGIN_TAG=${{ env.PLUGIN_TAG }}
-          make plugin-create PLUGIN_TAG=${{ env.PLUGIN_TAG }}
+          just plugin-build PLUGIN_TAG=${{ env.PLUGIN_TAG }}
+          just plugin-create PLUGIN_TAG=${{ env.PLUGIN_TAG }}
 
       - name: Push plugin
         run: docker plugin push ${{ env.PLUGIN_REPO }}:${{ env.PLUGIN_TAG }}
