@@ -37,8 +37,8 @@ jobs:
       - name: build & create docker plugin
         run: |
           set -e
-          just plugin-build PLUGIN_TAG=${{ env.PLUGIN_TAG }}
-          just plugin-create PLUGIN_TAG=${{ env.PLUGIN_TAG }}
+          just --set PLUGIN_TAG ${{ env.PLUGIN_TAG }} plugin-build
+          just --set PLUGIN_TAG ${{ env.PLUGIN_TAG }} plugin-create
 
       - name: Push plugin
         run: docker plugin push ${{ env.PLUGIN_REPO }}:${{ env.PLUGIN_TAG }}
